@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>צומת מילר - מעקב צפייה אישי</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Rubik / Heebo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            900: '#881337',
+                        },
+                        keshet: {
+                            purple: '#6366f1',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            font-family: 'Rubik', sans-serif;
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(225, 29, 72, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar pb-12">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
+                    <i class="fa-solid font-bold fa-tv text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-white tracking-wide flex items-center gap-2">
+                        צומת מילר <span class="text-xs bg-rose-600/30 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30">מעקב צפייה</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">איפה עצרנו? יומן צפייה אישי ועדכני</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Stats -->
+            <div class="flex items-center gap-3 text-xs sm:text-sm">
+                <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-rose-400"></i>
+                    <span>נצפו: <strong id="statWatchedCount" class="text-white">2</strong>/54 פרקים</span>
+                </div>
+                <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-amber-400"></i>
+                    <span>התקדמות: <strong id="statPercent" class="text-white">4%</strong></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-6 space-y-8">
+
+        <!-- Active Progress Hero Banner -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-rose-500/20 glow-effect">
+            <!-- Decorative background gradient -->
+            <div class="absolute -left-20 -top-20 w-72 h-72 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -right-20 -bottom-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-4">
+                
+                <!-- Main Status Text -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-3">
+                        <div class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs px-3 py-1 rounded-full font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                            נקודת עצירה נוכחית
+                        </div>
+
+                        <div class="overflow-hidden rounded-xl border border-slate-700/80 shadow-md h-12 w-28 sm:h-14 sm:w-36 bg-slate-800 flex-shrink-0">
+                            <img src="https://img.mako.co.il/2022/03/20/Zomet_01_E_No_logo_re.jpg" alt="צומת מילר" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex flex-wrap items-baseline gap-3">
+                            <span id="heroSeasonTitle" class="text-amber-400">עונה 1</span>
+                            <span class="text-slate-500">•</span>
+                            <span id="heroEpisodeTitle">פרק 3</span>
+                        </h2>
+                        <p id="heroEpisodeName" class="text-lg text-slate-300 font-medium">"זו דרמה זו לא קומדיה"</p>
+                    </div>
+
+                    <!-- Time Display Box & External Link -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-5 py-3 flex items-center gap-3">
+                                <i class="fa-solid fa-clock text-2xl text-rose-500"></i>
+                                <div>
+                                    <div class="text-xs text-slate-400">זמן צפייה מדויק</div>
+                                    <div id="heroTimeDisplay" class="text-2xl font-black text-white tracking-widest font-mono">24:05</div>
+                                </div>
+                            </div>
+
+                            <div class="text-xs text-slate-400 space-y-1">
+                                <div>משך פרק משוער: <span class="text-slate-200 font-semibold">~42:00</span></div>
+                                <div class="flex items-center gap-1.5 text-emerald-400 font-medium">
+                                    <i class="fa-solid fa-circle-check text-[10px]"></i>
+                                    שמור ומסונכרן
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Watch External Link -->
+                        <a href="https://www.mako.co.il/mako-vod-keshet/milers-crossroads" target="_blank" class="inline-flex items-center gap-2 text-xs text-slate-200 hover:text-rose-400 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 px-4 py-2.5 rounded-xl font-medium transition shadow-sm">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-rose-400"></i> פתח לצפייה ישירה ב-mako VOD / 12+
+                        </a>
+                    </div>
+
+                    <!-- Progress Bar for Current Episode -->
+                    <div class="space-y-1.5 pt-2">
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>התקדמות בפרק</span>
+                            <span id="heroProgressPercentText">57%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                            <div id="heroProgressBar" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full transition-all duration-500" style="width: 57%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Note Display -->
+                    <div id="heroNoteBox" class="bg-slate-900/50 border border-slate-800 rounded-lg p-3 text-sm text-slate-300 flex items-start gap-2">
+                        <i class="fa-solid fa-sticky-note text-amber-400 mt-0.5"></i>
+                        <span id="heroNoteText">עצרתי באמצע הסצנה של אדיר ועופר</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- All Seasons Directory / Checklist -->
+        <section class="glass-card rounded-2xl p-6 border border-slate-800 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-film text-rose-500"></i>
+                        רשימת הפרקים והעונות
+                    </h3>
+                    <p class="text-xs text-slate-400">לחץ על פרק כדי להגדירו כנקודת הצפייה או לסמן כנצפה</p>
+                </div>
+
+                <!-- Season Tabs -->
+                <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                    <button onclick="switchSeasonTab(1)" id="tabSeason1" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 1</button>
+                    <button onclick="switchSeasonTab(2)" id="tabSeason2" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 2</button>
+                    <button onclick="switchSeasonTab(3)" id="tabSeason3" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 3</button>
+                    <button onclick="switchSeasonTab(4)" id="tabSeason4" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 4</button>
+                </div>
+            </div>
+
+            <!-- Episode Grid -->
+            <div id="episodesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically filled by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 border-t border-slate-800 text-center py-6 text-xs text-slate-500 space-y-1">
+        <div>צומת מילר - מעקב צפייה אישי • נבנה עבור חווית צפייה כיפית ונוחה</div>
+        <div>הנתונים נשמרים בדפדפן המקומי שלך (LocalStorage)</div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-rose-600 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toastMsg" class="text-sm font-semibold">השינויים שנשמרו בהצלחה!</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Full Episode Database for Tzomet Miller (Seasons 1 - 4)
+        const showData = {
+            1: [
+                { id: 1, title: "אסי זה חבר", desc: "אדיר מנסה לעזור לחבר אבל מסתבך עם ציפיות מוגזמות.", duration: "41:00" },
+                { id: 2, title: "לשמח חיילים", desc: "אדיר יוצא להופיע מול חיילים בבסיס בדרום עם עופר שפיץ.", duration: "42:10" },
+                { id: 3, title: "זו דרמה זו לא קומדיה", desc: "אדיר רוצה לקבל תפקיד דרמטי רציני אך כולם רואים בו רק קומיקאי.", duration: "42:00" },
+                { id: 4, title: "מפורסם או חכם?", desc: "דילמות בין תהילה לתדמית אינטלקטואלית.", duration: "40:30" },
+                { id: 5, title: "לתפארת משטרת ישראל", desc: "מפגש מביך עם שוטרים ואי הבנות בדרכים.", duration: "41:45" },
+                { id: 6, title: "טטה הבטטה", desc: "כינויים משפחתיים וסיטואציות הורים ומורים.", duration: "39:50" },
+                { id: 7, title: "מחוברים", desc: "התמודדות עם תיעוד עצמי ומצלמות סביב השעון.", duration: "30:16" },
+                { id: 8, title: "יום נישואין", desc: "אדיר ומאיה מנסים לחגוג יום נישואין רומנטי ונכשלים.", duration: "41:15" },
+                { id: 9, title: "חו\"ל עם הילדים", desc: "הסיוט של כל הורה: טיסה וחופשה משפחתית.", duration: "43:00" },
+                { id: 10, title: "הופעה בקיבוץ", desc: "אדיר מגיע להופיע בקיבוץ עם חוקים מוזרים.", duration: "40:00" },
+                { id: 11, title: "שיפוצים", desc: "השיפוץ בבית שיוצא מכלל שליטה.", duration: "42:20" },
+                { id: 12, title: "אדיר בתפקיד דרמטי", desc: "אודישן נחשק לסרט קולנוע נחשב.", duration: "41:50" },
+                { id: 13, title: "ערב הוקרה", desc: "ערב מחווה מביך ולא צפוי.", duration: "40:40" },
+                { id: 14, title: "סיום עונה 1", desc: "סיכום העונה הראשונה והכנות לבאות.", duration: "44:00" }
+            ],
+            2: [
+                { id: 1, title: "למה תמיד אני הרעה", desc: "מאיה מתלוננת שאדיר תמיד יוצא ההורה הכייפי.", duration: "42:00" },
+                { id: 2, title: "הורים מלווים", desc: "אדיר מלווה טיול כיתתי ומסתבך עם המורה.", duration: "41:30" },
+                { id: 3, title: "הפקת יום הולדת", desc: "תחרות ימי הולדת מוגזמים בין הורים.", duration: "43:00" },
+                { id: 4, title: "חופשה באילת", desc: "סוף שבוע באילת שמסתבך בגלל עופר שפיץ.", duration: "42:15" },
+                { id: 5, title: "דיאטה וכושר", desc: "מאמן כושר אישי שנכנס לאדיר לצלחת.", duration: "40:50" },
+                { id: 6, title: "סלבריטי סנטר", desc: "הטבות סלבס והפאדיחות שנלוות אליהן.", duration: "41:10" },
+                { id: 7, title: "הכלב של השכנים", desc: "סכסוך שכנים קלאסי בבניין.", duration: "39:40" },
+                { id: 8, title: "מונית שירות", desc: "נסיעה תמימה שהופכת להרפתקה ערונית.", duration: "42:00" },
+                { id: 9, title: "בר מצווה", desc: "הופעה באירוע משפחתי פרטי.", duration: "41:20" },
+                { id: 10, title: "אירוע חברה", desc: "הופעת הוועד של עובדי חברת הייטק.", duration: "43:10" },
+                { id: 11, title: "הפגישה", desc: "פגישת מחזור מביכה מבית הספר.", duration: "40:30" },
+                { id: 12, title: "סיום עונה 2", desc: "פרק סיום עונה מצחיק ומותח.", duration: "44:15" }
+            ],
+            3: [
+                { id: 1, title: "משקפיים", desc: "אדיר מסרב להודות שהוא צריך משקפי ראייה.", duration: "42:00" },
+                { id: 2, title: "יום כיפור", desc: "המירוץ אחרי האופניים בכבישים.", duration: "41:10" },
+                { id: 3, title: "אמא בחו\"ל", desc: "מאיה נוסעת ואדיר נשאר לבד עם הבנות.", duration: "42:45" },
+                { id: 4, title: "לחוח", desc: "אנאלי נתפסת בצפיית בינג' בלעדית.", duration: "40:20" },
+                { id: 5, title: "שדכנים", desc: "ניסיונות שידוך כושלים של עופר ורותם.", duration: "41:50" },
+                { id: 6, title: "בנק עממי", desc: "בירוקרטיה ישראלית ושירות לקוחות.", duration: "42:10" },
+                { id: 7, title: "השיחה", desc: "השיחה שכל גבר מנסה להתחמק ממנה.", duration: "41:00" },
+                { id: 8, title: "המוסד", desc: "פגישות מול בירוקרטיה ופקידים.", duration: "43:00" },
+                { id: 9, title: "טיול שנתי", desc: "אדיר כהורה מלווה בפעם השנייה.", duration: "42:20" },
+                { id: 10, title: "אבא נרדם", desc: "פטר נרדם בכל מקום ואורח חיים משפחתי.", duration: "40:15" },
+                { id: 11, title: "רפי מסאג'", desc: "מפגש עם רפי שמציע מסאג' בכל הזדמנות.", duration: "41:30" },
+                { id: 12, title: "משה פרץ", desc: "קנאה, הופעות וזמרים מפורסמים.", duration: "42:50" },
+                { id: 13, title: "סיום עונה 3", desc: "פרק סיום עונה 3.", duration: "45:00" }
+            ],
+            4: [
+                { id: 1, title: "אבא גנוב", desc: "אדיר מתמודד עם ילדה מתבגרת בבית.", duration: "43:00" },
+                { id: 2, title: "מתבגרת", desc: "טיקטוק, רשתות חברתיות וגיל ההתבגרות.", duration: "42:10" },
+                { id: 3, title: "אנאלי והרישיון", desc: "אנאלי מנסה לעבור טסט בישראל.", duration: "41:40" },
+                { id: 4, title: "הופעה בזאפה", desc: "הופעה אינטימית עם קהל מאתגר.", duration: "42:00" },
+                { id: 5, title: "עופר והמסעדה", desc: "עופר שפיץ מנסה להיכנס לעסקי המזון.", duration: "40:50" },
+                { id: 6, title: "חופשה משפחתית", desc: "חופשה בצפון עם כל המשפחה המורחבת.", duration: "43:20" },
+                { id: 7, title: "הריון ולידה", desc: "סיפורים מחדר הלידה וזיכרונות.", duration: "41:30" },
+                { id: 8, title: "קבוצת וואטסאפ", desc: "הסיוט של קבוצות וואטסאפ כיתתיות.", duration: "40:00" },
+                { id: 9, title: "אדיר והחברים", desc: "ערב בירה עם החברים משנים.", duration: "42:00" },
+                { id: 10, title: "מעבר דירה", desc: "אורזים מובילים ואריזות בלאגן.", duration: "43:10" },
+                { id: 11, title: "סוכן נדל\"ן", desc: "מפגש עם דירות להשכרה ומתווכים.", duration: "41:50" },
+                { id: 12, title: "הורים וילדים", desc: "מסיבות סיום והצגות בית ספר.", duration: "42:30" },
+                { id: 13, title: "הפתעה", desc: "מסיבת הפתעה שלא הלכה לפי התכנון.", duration: "41:10" },
+                { id: 14, title: "לקראת הסוף", desc: "רגעים גדולים לפני פרק הבלוקבאסטר.", duration: "44:00" },
+                { id: 15, title: "פרק סיום הסדרה", desc: "פרק סיום הסדרה החגיגי והמרגש.", duration: "46:00" }
+            ]
+        };
+
+        // Application State
+        const STORAGE_KEY = 'tzomet_miller_tracker_v1';
+        
+        let state = {
+            season: 1,
+            episode: 7,
+            time: '10:54',
+            note: 'עצרתי בדקה 10:54',
+            watchedMap: {
+                "S1E1": true,
+                "S1E2": true,
+                "S1E3": true,
+                "S1E4": true,
+                "S1E5": true,
+                "S1E6": true
+            },
+            selectedTabSeason: 1
+        };
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedState();
+            renderUI();
+        });
+
+        // Load State from LocalStorage
+        function loadSavedState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    state = { ...state, ...parsed };
+                }
+            } catch (e) {
+                console.error("Could not load saved state", e);
+            }
+        }
+
+        // Save State to LocalStorage
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.error("Could not save state", e);
+            }
+        }
+
+        // Render UI
+        function renderUI() {
+            const seasonEps = showData[state.season] || [];
+            const epObj = seasonEps.find(e => e.id === parseInt(state.episode)) || { title: `פרק ${state.episode}`, desc: '', duration: '42:00' };
+
+            // Update Hero Banner
+            document.getElementById('heroSeasonTitle').textContent = `עונה ${state.season}`;
+            document.getElementById('heroEpisodeTitle').textContent = `פרק ${state.episode}`;
+            document.getElementById('heroEpisodeName').textContent = `"${epObj.title}"`;
+            document.getElementById('heroTimeDisplay').textContent = state.time;
+            document.getElementById('heroNoteText').textContent = state.note || "אין הערה שמורה כעת";
+
+            // Calculate episode progress percentage
+            const totalSec = parseTimeToSeconds(epObj.duration || '42:00');
+            const currentSec = parseTimeToSeconds(state.time);
+            const progressPercent = Math.min(100, Math.max(0, Math.round((currentSec / totalSec) * 100)));
+
+            document.getElementById('heroProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('heroProgressPercentText').textContent = `${progressPercent}%`;
+
+            // Calculate overall show stats
+            let totalEpisodes = 0;
+            let watchedCount = 0;
+            Object.keys(showData).forEach(s => {
+                showData[s].forEach(e => {
+                    totalEpisodes++;
+                    if (state.watchedMap[`S${s}E${e.id}`]) {
+                        watchedCount++;
+                    }
+                });
+            });
+
+            document.getElementById('statWatchedCount').textContent = watchedCount;
+            document.getElementById('statPercent').textContent = `${Math.round((watchedCount / totalEpisodes) * 100)}%`;
+
+            // Render Episodes List
+            renderEpisodesList();
+        }
+
+        // Switch Active Season Tab in Directory
+        function switchSeasonTab(seasonNum) {
+            state.selectedTabSeason = seasonNum;
+            renderEpisodesList();
+        }
+
+        // Render Episodes List for selected tab season
+        function renderEpisodesList() {
+            const currentTab = state.selectedTabSeason || state.season;
+            
+            // Update Tab styles
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`tabSeason${i}`);
+                if (i === currentTab) {
+                    btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition bg-rose-600 text-white shadow-md";
+                } else {
+                    btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800";
+                }
+            }
+
+            const grid = document.getElementById('episodesGrid');
+            const episodes = showData[currentTab] || [];
+
+            grid.innerHTML = episodes.map(ep => {
+                const key = `S${currentTab}E${ep.id}`;
+                const isWatched = state.watchedMap[key] || false;
+                const isCurrentSpot = (state.season === currentTab && parseInt(state.episode) === ep.id);
+
+                let statusBadge = '';
+                if (isCurrentSpot) {
+                    statusBadge = `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] px-2 py-0.5 rounded font-bold"><i class="fa-solid fa-location-dot ml-1"></i>עצרת כאן</span>`;
+                } else if (isWatched) {
+                    statusBadge = `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] px-2 py-0.5 rounded font-medium"><i class="fa-solid fa-check ml-1"></i>נצפה</span>`;
+                } else {
+                    statusBadge = `<span class="bg-slate-800 text-slate-400 text-[11px] px-2 py-0.5 rounded">טרם נצפה</span>`;
+                }
+
+                return `
+                    <div class="bg-slate-900/90 border ${isCurrentSpot ? 'border-amber-500/60 ring-1 ring-amber-500/30' : 'border-slate-800'} p-4 rounded-xl flex flex-col justify-between gap-3 hover:border-slate-700 transition">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-rose-400">פרק ${ep.id}</span>
+                                ${statusBadge}
+                            </div>
+                            <h4 class="text-sm font-bold text-white">${ep.title}</h4>
+                            <p class="text-xs text-slate-400 line-clamp-2">${ep.desc}</p>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                            <span class="text-slate-500 font-mono"><i class="fa-regular fa-clock ml-1"></i>${ep.duration}</span>
+                            
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="toggleWatchedStatus(${currentTab}, ${ep.id})" class="px-2 py-1 rounded ${isWatched ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-emerald-900/30 border border-emerald-700/50 text-emerald-400 hover:bg-emerald-800/40'} text-[11px] font-medium transition">
+                                    ${isWatched ? 'בטל צפייה' : 'סמן כנצפה'}
+                                </button>
+                                <button onclick="setCurrentSpot(${currentTab}, ${ep.id})" class="px-2.5 py-1 rounded bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-bold transition">
+                                    הגדר כנוכחי
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Direct Set Current Spot
+        function setCurrentSpot(season, episode) {
+            state.season = season;
+            state.episode = episode;
+            state.time = "00:00";
+            state.note = `התחלתי פרק ${episode}`;
+
+            saveState();
+            renderUI();
+            showToast(`נקודת העצירה עודכנה לעונה ${season} פרק ${episode}!`);
+        }
+
+        // Toggle Episode Watched Status
+        function toggleWatchedStatus(season, episode) {
+            const key = `S${season}E${episode}`;
+            state.watchedMap[key] = !state.watchedMap[key];
+            saveState();
+            renderUI();
+        }
+
+        // Helper Time Formats
+        function parseTimeToSeconds(timeStr) {
+            if (!timeStr || !timeStr.includes(':')) return 0;
+            const parts = timeStr.split(':');
+            const mins = parseInt(parts[0]) || 0;
+            const secs = parseInt(parts[1]) || 0;
+            return (mins * 60) + secs;
+        }
+
+        // Show Toast Message
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toastMsg');
+            msgSpan.textContent = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
