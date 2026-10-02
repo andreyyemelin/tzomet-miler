@@ -144,7 +144,7 @@
                             </div>
 
                             <div class="text-xs text-slate-400 space-y-1">
-                                <div>משך פרק משוער: <span class="text-slate-200 font-semibold">~34:25</span></div>
+                                <div>משך פרק משוער: <span id="heroDurationText" class="text-slate-200 font-semibold">~28:41</span></div>
                                 <div class="flex items-center gap-1.5 text-emerald-400 font-medium">
                                     <i class="fa-solid fa-circle-check text-[10px]"></i>
                                     שמור ומסונכרן
@@ -234,7 +234,7 @@
                 { id: 8, title: "יום נישואין", desc: "אדיר ומאיה מנסים לחגוג יום נישואין רומנטי ונכשלים.", duration: "41:15" },
                 { id: 9, title: "חו\"ל עם הילדים", desc: "הסיוט של כל הורה: טיסה וחופשה משפחתית.", duration: "34:25" },
                 { id: 10, title: "הופעה בקיבוץ", desc: "אדיר מגיע להופיע בקיבוץ עם חוקים מוזרים.", duration: "40:00" },
-                { id: 11, title: "שיפוצים", desc: "השיפוץ בבית שיוצא מכלל שליטה.", duration: "42:20" },
+                { id: 11, title: "שיפוצים", desc: "השיפוץ בבית שיוצא מכלל שליטה.", duration: "28:41" },
                 { id: 12, title: "אדיר בתפקיד דרמטי", desc: "אודישן נחשק לסרט קולנוע נחשב.", duration: "41:50" },
                 { id: 13, title: "ערב הוקרה", desc: "ערב מחווה מביך ולא צפוי.", duration: "40:40" },
                 { id: 14, title: "סיום עונה 1", desc: "סיכום העונה הראשונה והכנות לבאות.", duration: "44:00" }
@@ -292,9 +292,9 @@
         
         let state = {
             season: 1,
-            episode: 9,
-            time: '17:58',
-            note: 'עצרתי בדקה 17:58',
+            episode: 11,
+            time: '08:18',
+            note: 'עצרתי בדקה 08:18',
             watchedMap: {
                 "S1E1": true,
                 "S1E2": true,
@@ -303,7 +303,9 @@
                 "S1E5": true,
                 "S1E6": true,
                 "S1E7": true,
-                "S1E8": true
+                "S1E8": true,
+                "S1E9": true,
+                "S1E10": true
             },
             selectedTabSeason: 1
         };
@@ -339,7 +341,7 @@
         // Render UI
         function renderUI() {
             const seasonEps = showData[state.season] || [];
-            const epObj = seasonEps.find(e => e.id === parseInt(state.episode)) || { title: `פרק ${state.episode}`, desc: '', duration: '42:00' };
+            const epObj = seasonEps.find(e => e.id === parseInt(state.episode)) || { title: `פרק ${state.episode}`, desc: '', duration: '28:41' };
 
             // Update Hero Banner
             document.getElementById('heroSeasonTitle').textContent = `עונה ${state.season}`;
@@ -347,9 +349,12 @@
             document.getElementById('heroEpisodeName').textContent = `"${epObj.title}"`;
             document.getElementById('heroTimeDisplay').textContent = state.time;
             document.getElementById('heroNoteText').textContent = state.note || "אין הערה שמורה כעת";
+            if (document.getElementById('heroDurationText')) {
+                document.getElementById('heroDurationText').textContent = `~${epObj.duration}`;
+            }
 
             // Calculate episode progress percentage
-            const totalSec = parseTimeToSeconds(epObj.duration || '42:00');
+            const totalSec = parseTimeToSeconds(epObj.duration || '28:41');
             const currentSec = parseTimeToSeconds(state.time);
             const progressPercent = Math.min(100, Math.max(0, Math.round((currentSec / totalSec) * 100)));
 
