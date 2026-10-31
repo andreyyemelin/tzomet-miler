@@ -12,7 +12,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts (Rubik / Heebo) -->
+    <!-- Google Fonts (Rubik) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,21 +23,6 @@
                 extend: {
                     fontFamily: {
                         sans: ['Rubik', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                            900: '#881337',
-                        },
-                        keshet: {
-                            purple: '#6366f1',
-                            dark: '#0f172a',
-                            card: '#1e293b'
-                        }
                     }
                 }
             }
@@ -80,7 +65,7 @@
             </div>
             <div class="space-y-2">
                 <h2 class="text-2xl font-extrabold text-white">כניסה מאובטחת</h2>
-                <p class="text-xs text-slate-400">הזן את סיסמת הגישה כדי לגשת למערכת הסנכרון והמעקב של צומת מילר</p>
+                <p class="text-xs text-slate-400">הזן את סיסמת הגישה כדי לגשת למערכת הסנכרון בענן של צומת מילר</p>
             </div>
             <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
@@ -103,9 +88,9 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold text-white tracking-wide flex items-center gap-2">
-                        צומת מילר <span class="text-xs bg-rose-600/30 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30">מעקב ענן</span>
+                        צומת מילר <span class="text-xs bg-rose-600/30 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30">סנכרון ענן בזמן אמת</span>
                     </h1>
-                    <p class="text-xs text-slate-400">מסונכרן בזמן אמת מכל מכשיר בעולם</p>
+                    <p class="text-xs text-slate-400">מעדכן אוטומטית בכל מכשיר בעולם</p>
                 </div>
             </div>
 
@@ -127,13 +112,11 @@
 
         <!-- Active Progress Hero Banner & Quick Editor -->
         <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-rose-500/20 glow-effect">
-            <!-- Decorative background gradient -->
             <div class="absolute -left-20 -top-20 w-72 h-72 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -right-20 -bottom-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div class="relative z-10 space-y-6">
                 
-                <!-- Main Status Header -->
                 <div class="flex items-center justify-between flex-wrap gap-3">
                     <div class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs px-3 py-1 rounded-full font-semibold">
                         <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
@@ -146,7 +129,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <!-- Left info box -->
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex flex-wrap items-baseline gap-3">
@@ -167,7 +149,6 @@
                             </div>
                         </div>
 
-                        <!-- Progress Bar for Current Episode -->
                         <div class="space-y-1.5">
                             <div class="flex justify-between text-xs text-slate-400">
                                 <span>התקדמות בפרק</span>
@@ -179,7 +160,6 @@
                         </div>
                     </div>
 
-                    <!-- Right Quick Update Form Box -->
                     <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-5 space-y-4 shadow-xl">
                         <h3 class="text-sm font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-pen-to-square text-rose-500"></i>
@@ -234,7 +214,6 @@
                     <p class="text-xs text-slate-400">סמן פרקים כנצפו או קבע כנקודת עצירה נוכחית</p>
                 </div>
 
-                <!-- Season Tabs -->
                 <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
                     <button onclick="switchSeasonTab(1)" id="tabSeason1" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 1</button>
                     <button onclick="switchSeasonTab(2)" id="tabSeason2" class="season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition">עונה 2</button>
@@ -243,7 +222,6 @@
                 </div>
             </div>
 
-            <!-- Episode Grid -->
             <div id="episodesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Dynamically filled by JS -->
             </div>
@@ -253,7 +231,7 @@
 
     <!-- Footer -->
     <footer class="mt-12 border-t border-slate-800 text-center py-6 text-xs text-slate-500 space-y-1">
-        <div>צומת מילר - מעקב צפייה מסונכרן בענן • סיסמת כניסה מוגנת</div>
+        <div>צומת מילר - מעקב צפייה מסונכרן בענן • סיסמת כניסה מוגנת (2712)</div>
         <div id="syncStatus" class="text-emerald-400 font-medium">מסונכרן בזמן אמת מול ענן Firebase</div>
     </footer>
 
@@ -264,7 +242,27 @@
     </div>
 
     <!-- Firebase SDKs and App Logic -->
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcMs4j9fmE9Z9jW1UxucthxIxMqK5dXsg",
+            authDomain: "tzomet-miler.firebaseapp.com",
+            projectId: "tzomet-miler",
+            storageBucket: "tzomet-miler.firebasestorage.app",
+            messagingSenderId: "242657474481",
+            appId: "1:242657474481:web:b17b2e53ccc2ee58eaaf90",
+            measurementId: "G-RHPMYV9NPX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tzomet-miler-shared';
+
         // Full Episode Database for Tzomet Miller (Seasons 1 - 4)
         const showData = {
             1: [
@@ -346,71 +344,88 @@
         };
 
         window.state = defaultState;
+        let isSaving = false;
 
-        // Check Password Login State
-        window.handleLogin = function(event) {
+        // Login check
+        window.handleLogin = async function(event) {
             event.preventDefault();
             const pass = document.getElementById('passwordInput').value.trim();
             const errorEl = document.getElementById('loginError');
             if (pass === '2712') {
                 localStorage.setItem('tzomet_authed', 'true');
                 document.getElementById('authModal').classList.add('hidden');
-                initApp();
+                await initFirebaseAndSync();
             } else {
                 errorEl.classList.remove('hidden');
             }
         }
 
-        // Initialize local/synced storage
-        function initApp() {
+        async function initFirebaseAndSync() {
             try {
-                const saved = localStorage.getItem('tzomet_miler_state');
-                if (saved) {
-                    window.state = JSON.parse(saved);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    localStorage.setItem('tzomet_miler_state', JSON.stringify(defaultState));
+                    await signInAnonymously(auth);
                 }
 
-                const badge = document.getElementById('cloudStatusBadge');
-                if (badge) {
-                    badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
-                    badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-400"></i><span>המערכת פעילה ומסונכרנת</span>`;
-                }
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'tzomet_miler_progress');
+
+                // Real-time listener (Syncs instantly across all devices in the world!)
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const cloudData = docSnap.data();
+                        if (!isSaving && cloudData) {
+                            window.state = { ...defaultState, ...cloudData };
+                            renderUI();
+                        }
+                    } else {
+                        // Initialize document if not exists
+                        setDoc(docRef, defaultState);
+                    }
+
+                    const badge = document.getElementById('cloudStatusBadge');
+                    if (badge) {
+                        badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
+                        badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-400"></i><span>מסונכרן לענן בזמן אמת</span>`;
+                    }
+                }, (error) => {
+                    console.error("Sync error:", error);
+                });
+
             } catch (err) {
-                console.error("Init error:", err);
+                console.error("Firebase auth/init error:", err);
             }
             renderUI();
         }
 
-        // Save State
-        window.saveStateToCloud = function() {
+        window.saveStateToCloud = async function() {
+            isSaving = true;
             try {
-                localStorage.setItem('tzomet_miler_state', JSON.stringify(window.state));
-                showToast("הנתונים נשמרו בהצלחה!");
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'tzomet_miler_progress');
+                await setDoc(docRef, window.state);
+                showToast("השינויים נשמרו בענן בהצלחה!");
             } catch (err) {
-                console.error("Error saving:", err);
-                showToast("שגיאה בשמירה");
+                console.error("Save error:", err);
+                showToast("שגיאה בשמירה לענן");
+            } finally {
+                setTimeout(() => { isSaving = false; }, 1000);
             }
         }
 
-        // Render UI
         window.renderUI = function() {
             const seasonEps = showData[window.state.season] || [];
             const epObj = seasonEps.find(e => e.id === parseInt(window.state.episode)) || { title: `פרק ${window.state.episode}`, desc: '', duration: '41:00' };
 
-            // Update Hero Banner
             document.getElementById('heroSeasonTitle').textContent = `עונה ${window.state.season}`;
             document.getElementById('heroEpisodeTitle').textContent = `פרק ${window.state.episode}`;
             document.getElementById('heroEpisodeName').textContent = `"${epObj.title}"`;
             document.getElementById('heroTimeDisplay').textContent = window.state.time || "00:00";
 
-            // Sync form inputs
             document.getElementById('editSeasonSelect').value = window.state.season;
             document.getElementById('editEpisodeInput').value = window.state.episode;
             document.getElementById('editTimeInput').value = window.state.time || "00:00";
             document.getElementById('editNoteInput').value = window.state.note || "";
 
-            // Calculate episode progress percentage
             const totalSec = parseTimeToSeconds(epObj.duration || '41:00');
             const currentSec = parseTimeToSeconds(window.state.time || '00:00');
             const progressPercent = Math.min(100, Math.max(0, Math.round((currentSec / totalSec) * 100)));
@@ -418,7 +433,6 @@
             document.getElementById('heroProgressBar').style.width = `${progressPercent}%`;
             document.getElementById('heroProgressPercentText').textContent = `${progressPercent}%`;
 
-            // Calculate overall show stats
             let totalEpisodes = 0;
             let watchedCount = 0;
             Object.keys(showData).forEach(s => {
@@ -431,13 +445,10 @@
             });
 
             document.getElementById('statPercent').textContent = `${Math.round((watchedCount / totalEpisodes) * 100)}%`;
-
-            // Render Episodes List
             renderEpisodesList();
         }
 
-        // Quick Update Form Submission
-        window.handleQuickUpdate = function() {
+        window.handleQuickUpdate = async function() {
             const s = parseInt(document.getElementById('editSeasonSelect').value);
             const e = parseInt(document.getElementById('editEpisodeInput').value);
             const t = document.getElementById('editTimeInput').value.trim() || "00:00";
@@ -448,21 +459,18 @@
             window.state.time = t;
             window.state.note = n;
 
-            // Also mark as watched up to current
             if (!window.state.watchedMap) window.state.watchedMap = {};
             window.state.watchedMap[`S${s}E${e}`] = true;
 
-            saveStateToCloud();
+            await saveStateToCloud();
             renderUI();
         }
 
-        // Switch Active Season Tab in Directory
         window.switchSeasonTab = function(seasonNum) {
             window.state.selectedTabSeason = seasonNum;
             renderEpisodesList();
         }
 
-        // Render Episodes List
         function renderEpisodesList() {
             const currentTab = window.state.selectedTabSeason || window.state.season;
             
@@ -523,7 +531,7 @@
             }).join('');
         }
 
-        window.setCurrentSpotFromGrid = function(season, episode) {
+        window.setCurrentSpotFromGrid = async function(season, episode) {
             window.state.season = season;
             window.state.episode = episode;
             window.state.time = "00:00";
@@ -531,16 +539,16 @@
             if (!window.state.watchedMap) window.state.watchedMap = {};
             window.state.watchedMap[`S${season}E${episode}`] = true;
 
-            saveStateToCloud();
+            await saveStateToCloud();
             renderUI();
         }
 
-        window.toggleWatchedStatus = function(season, episode) {
+        window.toggleWatchedStatus = async function(season, episode) {
             const key = `S${season}E${episode}`;
             if (!window.state.watchedMap) window.state.watchedMap = {};
             window.state.watchedMap[key] = !window.state.watchedMap[key];
             
-            saveStateToCloud();
+            await saveStateToCloud();
             renderUI();
         }
 
@@ -567,10 +575,10 @@
             }, 3200);
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             if (localStorage.getItem('tzomet_authed') === 'true') {
                 document.getElementById('authModal').classList.add('hidden');
-                initApp();
+                await initFirebaseAndSync();
             }
         });
     </script>
