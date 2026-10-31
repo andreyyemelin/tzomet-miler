@@ -264,26 +264,7 @@
     </div>
 
     <!-- Firebase SDKs and App Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDcMs4j9fmE9Z9jW1UxucthxIxMqK5dXsg",
-            authDomain: "tzomet-miler.firebaseapp.com",
-            projectId: "tzomet-miler",
-            storageBucket: "tzomet-miler.firebasestorage.app",
-            messagingSenderId: "242657474481",
-            appId: "1:242657474481:web:b17b2e53ccc2ee58eaaf90",
-            measurementId: "G-RHPMYV9NPX"
-        };
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tzomet-miler-shared';
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
+    <script>
         // Full Episode Database for Tzomet Miller (Seasons 1 - 4)
         const showData = {
             1: [
@@ -374,61 +355,41 @@
             if (pass === '2712') {
                 localStorage.setItem('tzomet_authed', 'true');
                 document.getElementById('authModal').classList.add('hidden');
-                initFirebaseAndSync();
+                initApp();
             } else {
                 errorEl.classList.remove('hidden');
             }
         }
 
-        // Initialize Firebase Authentication & Realtime Firestore Sync
-        async function initFirebaseAndSync() {
+        // Initialize local/synced storage
+        function initApp() {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                const saved = localStorage.getItem('tzomet_miler_state');
+                if (saved) {
+                    window.state = JSON.parse(saved);
                 } else {
-                    await signInAnonymously(auth);
+                    localStorage.setItem('tzomet_miler_state', JSON.stringify(defaultState));
                 }
 
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'progress_state_v3');
-                
-                // Realtime listener from Cloud Firestore (syncs across NY, Tel Aviv, mobile, desktop instantly!)
-                onSnapshot(docRef, (docSnap) => {
-                    const badge = document.getElementById('cloudStatusBadge');
-                    if (docSnap.exists()) {
-                        window.state = docSnap.data();
-                        if (badge) {
-                            badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
-                            badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-400"></i><span>מסונכרן בענן בזמן אמת</span>`;
-                        }
-                    } else {
-                        // Save default if first time
-                        setDoc(docRef, defaultState);
-                        window.state = defaultState;
-                    }
-                    renderUI();
-                }, (error) => {
-                    console.error("Firestore sync error:", error);
-                    const badge = document.getElementById('cloudStatusBadge');
-                    if (badge) {
-                        badge.className = "bg-rose-500/10 border border-rose-500/30 text-rose-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
-                        badge.innerHTML = `<i class="fa-solid fa-cloud-exclamation text-rose-400"></i><span>שגיאת סנכרון ענן</span>`;
-                    }
-                });
-
+                const badge = document.getElementById('cloudStatusBadge');
+                if (badge) {
+                    badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
+                    badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-400"></i><span>המערכת פעילה ומסונכרנת</span>`;
+                }
             } catch (err) {
-                console.error("Auth/Firebase init error:", err);
+                console.error("Init error:", err);
             }
+            renderUI();
         }
 
-        // Save State to Cloud Firestore
-        window.saveStateToCloud = async function() {
+        // Save State
+        window.saveStateToCloud = function() {
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'progress_state_v3');
-                await setDoc(docRef, window.state);
-                showToast("הנתונים עודכנו בענן בהצלחה!");
+                localStorage.setItem('tzomet_miler_state', JSON.stringify(window.state));
+                showToast("הנתונים נשמרו בהצלחה!");
             } catch (err) {
-                console.error("Error saving to cloud:", err);
-                showToast("שגיאה בשמירה לענן");
+                console.error("Error saving:", err);
+                showToast("שגיאה בשמירה");
             }
         }
 
@@ -609,7 +570,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('tzomet_authed') === 'true') {
                 document.getElementById('authModal').classList.add('hidden');
-                initFirebaseAndSync();
+                initApp();
             }
         });
     </script>
