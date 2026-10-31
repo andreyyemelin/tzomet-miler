@@ -259,7 +259,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tzomet-miler-shared';
+        // Fixed even-segment path for Firestore (Collection 'tzomet_miler', Document 'progress_data')
+        const getDocRef = () => doc(db, 'tzomet_miler', 'progress_data');
 
         // Full Episode Database for Tzomet Miller (Seasons 1 - 4)
         const showData = {
@@ -360,7 +361,7 @@
 
         function initFirebaseAndSync() {
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'tzomet_miler_progress');
+                const docRef = getDocRef();
 
                 // Real-time listener (Syncs instantly across all devices in the world!)
                 onSnapshot(docRef, (docSnap) => {
@@ -393,7 +394,7 @@
         window.saveStateToCloud = async function() {
             isSaving = true;
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'tzomet_miler_progress');
+                const docRef = getDocRef();
                 await setDoc(docRef, window.state);
                 showToast("השינויים נשמרו בענן בהצלחה!");
             } catch (err) {
