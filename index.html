@@ -1,3 +1,4 @@
+<!-- ... entlang existing code ... -->
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -71,6 +72,28 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between custom-scrollbar pb-12">
 
+    <!-- Password Lock Screen Overlay -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-8 rounded-2xl border border-rose-500/30 shadow-2xl space-y-6 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-rose-500/30 text-2xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-extrabold text-white">כניסה מאובטחת</h2>
+                <p class="text-xs text-slate-400">הזן את סיסמת הגישה כדי לגשת למערכת הסנכרון והמעקב של צומת מילר</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="passwordInput" placeholder="הקש סיסמה..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-center text-white tracking-widest text-lg focus:outline-none focus:border-rose-500 transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-rose-600/20">
+                    כניסה למערכת
+                </button>
+            </form>
+            <div id="loginError" class="text-xs text-rose-400 font-medium hidden">סיסמה שגויה, נסה שוב.</div>
+        </div>
+    </div>
+
     <!-- Header Navigation -->
     <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 sm:px-8">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
@@ -80,21 +103,21 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-extrabold text-white tracking-wide flex items-center gap-2">
-                        צומת מילר <span class="text-xs bg-rose-600/30 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30">מעקב צפייה</span>
+                        צומת מילר <span class="text-xs bg-rose-600/30 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30">מעקב ענן</span>
                     </h1>
-                    <p class="text-xs text-slate-400">איפה עצרנו? יומן צפייה אישי ועדכני</p>
+                    <p class="text-xs text-slate-400">מסונכרן בזמן אמת מכל מכשיר בעולם</p>
                 </div>
             </div>
 
-            <!-- Header Quick Stats -->
+            <!-- Header Quick Stats & Cloud Sync Status -->
             <div class="flex items-center gap-3 text-xs sm:text-sm">
-                <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-rose-400"></i>
-                    <span>נצפו: <strong id="statWatchedCount" class="text-white">2</strong>/54 פרקים</span>
+                <div id="cloudStatusBadge" class="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <i class="fa-solid fa-cloud animate-pulse"></i>
+                    <span>מתחבר לענן...</span>
                 </div>
-                <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <div class="bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-lg hidden sm:flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-amber-400"></i>
-                    <span>התקדמות: <strong id="statPercent" class="text-white">4%</strong></span>
+                    <span>התקדמות: <strong id="statPercent" class="text-white">0%</strong></span>
                 </div>
             </div>
         </div>
@@ -102,77 +125,98 @@
 
     <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-6 space-y-8">
 
-        <!-- Active Progress Hero Banner -->
+        <!-- Active Progress Hero Banner & Quick Editor -->
         <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-rose-500/20 glow-effect">
             <!-- Decorative background gradient -->
             <div class="absolute -left-20 -top-20 w-72 h-72 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -right-20 -bottom-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="relative z-10 space-y-4">
+            <div class="relative z-10 space-y-6">
                 
-                <!-- Main Status Text -->
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between flex-wrap gap-3">
-                        <div class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs px-3 py-1 rounded-full font-semibold">
-                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-                            נקודת עצירה נוכחית
-                        </div>
-
-                        <div class="overflow-hidden rounded-xl border border-slate-700/80 shadow-md h-12 w-28 sm:h-14 sm:w-36 bg-slate-800 flex-shrink-0">
-                            <img src="https://img.mako.co.il/2022/03/20/Zomet_01_E_No_logo_re.jpg" alt="צומת מילר" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'">
-                        </div>
+                <!-- Main Status Header -->
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs px-3 py-1 rounded-full font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                        נקודת עצירה נוכחית בענן
                     </div>
 
-                    <div class="space-y-1">
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex flex-wrap items-baseline gap-3">
-                            <span id="heroSeasonTitle" class="text-amber-400">עונה 1</span>
-                            <span class="text-slate-500">•</span>
-                            <span id="heroEpisodeTitle">פרק 3</span>
-                        </h2>
-                        <p id="heroEpisodeName" class="text-lg text-slate-300 font-medium">"זו דרמה זו לא קומדיה"</p>
+                    <div class="overflow-hidden rounded-xl border border-slate-700/80 shadow-md h-12 w-28 sm:h-14 sm:w-36 bg-slate-800 flex-shrink-0">
+                        <img src="https://img.mako.co.il/2022/03/20/Zomet_01_E_No_logo_re.jpg" alt="צומת מילר" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'">
                     </div>
+                </div>
 
-                    <!-- Time Display Box & External Link -->
-                    <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                    <!-- Left info box -->
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex flex-wrap items-baseline gap-3">
+                                <span id="heroSeasonTitle" class="text-amber-400">עונה 3</span>
+                                <span class="text-slate-500">•</span>
+                                <span id="heroEpisodeTitle">פרק 7</span>
+                            </h2>
+                            <p id="heroEpisodeName" class="text-lg text-slate-300 font-medium">"השיחה"</p>
+                        </div>
+
                         <div class="flex items-center gap-4">
                             <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-5 py-3 flex items-center gap-3">
                                 <i class="fa-solid fa-clock text-2xl text-rose-500"></i>
                                 <div>
                                     <div class="text-xs text-slate-400">זמן צפייה מדויק</div>
-                                    <div id="heroTimeDisplay" class="text-2xl font-black text-white tracking-widest font-mono">33:36</div>
-                                </div>
-                            </div>
-
-                            <div class="text-xs text-slate-400 space-y-1">
-                                <div>משך פרק משוער: <span id="heroDurationText" class="text-slate-200 font-semibold">~42:00</span></div>
-                                <div class="flex items-center gap-1.5 text-emerald-400 font-medium">
-                                    <i class="fa-solid fa-circle-check text-[10px]"></i>
-                                    שמור ומסונכרן
+                                    <div id="heroTimeDisplay" class="text-2xl font-black text-white tracking-widest font-mono">22:02</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Watch External Link -->
-                        <a href="https://www.mako.co.il/mako-vod-keshet/milers-crossroads" target="_blank" class="inline-flex items-center gap-2 text-xs text-slate-200 hover:text-rose-400 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 px-4 py-2.5 rounded-xl font-medium transition shadow-sm">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-rose-400"></i> פתח לצפייה ישירה ב-mako VOD / 12+
-                        </a>
-                    </div>
-
-                    <!-- Progress Bar for Current Episode -->
-                    <div class="space-y-1.5 pt-2">
-                        <div class="flex justify-between text-xs text-slate-400">
-                            <span>התקדמות בפרק</span>
-                            <span id="heroProgressPercentText">80%</span>
-                        </div>
-                        <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
-                            <div id="heroProgressBar" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full transition-all duration-500" style="width: 80%;"></div>
+                        <!-- Progress Bar for Current Episode -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>התקדמות בפרק</span>
+                                <span id="heroProgressPercentText">54%</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                                <div id="heroProgressBar" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full transition-all duration-500" style="width: 54%;"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Note Display -->
-                    <div id="heroNoteBox" class="bg-slate-900/50 border border-slate-800 rounded-lg p-3 text-sm text-slate-300 flex items-start gap-2">
-                        <i class="fa-solid fa-sticky-note text-amber-400 mt-0.5"></i>
-                        <span id="heroNoteText">עצרתי בדקה 33:36</span>
+                    <!-- Right Quick Update Form Box -->
+                    <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-5 space-y-4 shadow-xl">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-rose-500"></i>
+                            עדכון נקודת עצירה מהיר
+                        </h3>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">עונה</label>
+                                <select id="editSeasonSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                    <option value="1">עונה 1</option>
+                                    <option value="2">עונה 2</option>
+                                    <option value="3">עונה 3</option>
+                                    <option value="4">עונה 4</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">פרק</label>
+                                <input type="number" id="editEpisodeInput" min="1" max="15" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">זמן עצירה (דקה:שנייה)</label>
+                                <input type="text" id="editTimeInput" placeholder="22:02" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-rose-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">הערה קצרה</label>
+                                <input type="text" id="editNoteInput" placeholder="לדוגמה: בסלון..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                        </div>
+
+                        <button onclick="handleQuickUpdate()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-lg text-xs transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            שמור ועדכן לענן
+                        </button>
                     </div>
                 </div>
 
@@ -187,7 +231,7 @@
                         <i class="fa-solid fa-film text-rose-500"></i>
                         רשימת הפרקים והעונות
                     </h3>
-                    <p class="text-xs text-slate-400">לחץ על פרק כדי להגדירו כנקודת הצפייה או לסמן כנצפה</p>
+                    <p class="text-xs text-slate-400">סמן פרקים כנצפו או קבע כנקודת עצירה נוכחית</p>
                 </div>
 
                 <!-- Season Tabs -->
@@ -209,18 +253,37 @@
 
     <!-- Footer -->
     <footer class="mt-12 border-t border-slate-800 text-center py-6 text-xs text-slate-500 space-y-1">
-        <div>צומת מילר - מעקב צפייה אישי • נבנה עבור חווית צפייה כיפית ונוחה</div>
-        <div>הנתונים נשמרים בדפדפן המקומי שלך (LocalStorage)</div>
+        <div>צומת מילר - מעקב צפייה מסונכרן בענן • סיסמת כניסה מוגנת</div>
+        <div id="syncStatus" class="text-emerald-400 font-medium">מסונכרן בזמן אמת מול ענן Firebase</div>
     </footer>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-rose-600 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
         <i id="toastIcon" class="fa-solid fa-circle-check text-lg"></i>
-        <span id="toastMsg" class="text-sm font-semibold">השינויים שנשמרו בהצלחה!</span>
+        <span id="toastMsg" class="text-sm font-semibold">השינויים נשמרו בהצלחה!</span>
     </div>
 
-    <!-- JavaScript Application Logic -->
-    <script>
+    <!-- Firebase SDKs and App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcMs4j9fmE9Z9jW1UxucthxIxMqK5dXsg",
+            authDomain: "tzomet-miler.firebaseapp.com",
+            projectId: "tzomet-miler",
+            storageBucket: "tzomet-miler.firebasestorage.app",
+            messagingSenderId: "242657474481",
+            appId: "1:242657474481:web:b17b2e53ccc2ee58eaaf90",
+            measurementId: "G-RHPMYV9NPX"
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tzomet-miler-shared';
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         // Full Episode Database for Tzomet Miller (Seasons 1 - 4)
         const showData = {
             1: [
@@ -288,14 +351,11 @@
             ]
         };
 
-        // Application State
-        const STORAGE_KEY = 'tzomet_miller_tracker_v1';
-        
-        let state = {
+        let defaultState = {
             season: 3,
             episode: 7,
             time: '22:02',
-            note: 'עצרתי בדקה 22:02',
+            note: 'עצרתי בעונה 3 פרק 7 בדקה 22:02',
             watchedMap: {
                 "S1E1": true, "S1E2": true, "S1E3": true, "S1E4": true, "S1E5": true, "S1E6": true, "S1E7": true, "S1E8": true, "S1E9": true, "S1E10": true, "S1E11": true, "S1E12": true, "S1E13": true, "S1E14": true,
                 "S2E1": true, "S2E2": true, "S2E3": true, "S2E4": true, "S2E5": true, "S2E6": true, "S2E7": true, "S2E8": true, "S2E9": true, "S2E10": true, "S2E11": true, "S2E12": true, "S2E13": true,
@@ -304,52 +364,94 @@
             selectedTabSeason: 3
         };
 
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedState();
-            renderUI();
-        });
+        window.state = defaultState;
 
-        // Load State from LocalStorage
-        function loadSavedState() {
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    state = { ...state, ...parsed };
-                }
-            } catch (e) {
-                console.error("Could not load saved state", e);
+        // Check Password Login State
+        window.handleLogin = function(event) {
+            event.preventDefault();
+            const pass = document.getElementById('passwordInput').value.trim();
+            const errorEl = document.getElementById('loginError');
+            if (pass === '2712') {
+                localStorage.setItem('tzomet_authed', 'true');
+                document.getElementById('authModal').classList.add('hidden');
+                initFirebaseAndSync();
+            } else {
+                errorEl.classList.remove('hidden');
             }
         }
 
-        // Save State to LocalStorage
-        function saveState() {
+        // Initialize Firebase Authentication & Realtime Firestore Sync
+        async function initFirebaseAndSync() {
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            } catch (e) {
-                console.error("Could not save state", e);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'progress_state_v3');
+                
+                // Realtime listener from Cloud Firestore (syncs across NY, Tel Aviv, mobile, desktop instantly!)
+                onSnapshot(docRef, (docSnap) => {
+                    const badge = document.getElementById('cloudStatusBadge');
+                    if (docSnap.exists()) {
+                        window.state = docSnap.data();
+                        if (badge) {
+                            badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
+                            badge.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-400"></i><span>מסונכרן בענן בזמן אמת</span>`;
+                        }
+                    } else {
+                        // Save default if first time
+                        setDoc(docRef, defaultState);
+                        window.state = defaultState;
+                    }
+                    renderUI();
+                }, (error) => {
+                    console.error("Firestore sync error:", error);
+                    const badge = document.getElementById('cloudStatusBadge');
+                    if (badge) {
+                        badge.className = "bg-rose-500/10 border border-rose-500/30 text-rose-300 px-3 py-1.5 rounded-lg flex items-center gap-2";
+                        badge.innerHTML = `<i class="fa-solid fa-cloud-exclamation text-rose-400"></i><span>שגיאת סנכרון ענן</span>`;
+                    }
+                });
+
+            } catch (err) {
+                console.error("Auth/Firebase init error:", err);
+            }
+        }
+
+        // Save State to Cloud Firestore
+        window.saveStateToCloud = async function() {
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'progress_state_v3');
+                await setDoc(docRef, window.state);
+                showToast("הנתונים עודכנו בענן בהצלחה!");
+            } catch (err) {
+                console.error("Error saving to cloud:", err);
+                showToast("שגיאה בשמירה לענן");
             }
         }
 
         // Render UI
-        function renderUI() {
-            const seasonEps = showData[state.season] || [];
-            const epObj = seasonEps.find(e => e.id === parseInt(state.episode)) || { title: `פרק ${state.episode}`, desc: '', duration: '28:41' };
+        window.renderUI = function() {
+            const seasonEps = showData[window.state.season] || [];
+            const epObj = seasonEps.find(e => e.id === parseInt(window.state.episode)) || { title: `פרק ${window.state.episode}`, desc: '', duration: '41:00' };
 
             // Update Hero Banner
-            document.getElementById('heroSeasonTitle').textContent = `עונה ${state.season}`;
-            document.getElementById('heroEpisodeTitle').textContent = `פרק ${state.episode}`;
+            document.getElementById('heroSeasonTitle').textContent = `עונה ${window.state.season}`;
+            document.getElementById('heroEpisodeTitle').textContent = `פרק ${window.state.episode}`;
             document.getElementById('heroEpisodeName').textContent = `"${epObj.title}"`;
-            document.getElementById('heroTimeDisplay').textContent = state.time;
-            document.getElementById('heroNoteText').textContent = state.note || "אין הערה שמורה כעת";
-            if (document.getElementById('heroDurationText')) {
-                document.getElementById('heroDurationText').textContent = `~${epObj.duration}`;
-            }
+            document.getElementById('heroTimeDisplay').textContent = window.state.time || "00:00";
+
+            // Sync form inputs
+            document.getElementById('editSeasonSelect').value = window.state.season;
+            document.getElementById('editEpisodeInput').value = window.state.episode;
+            document.getElementById('editTimeInput').value = window.state.time || "00:00";
+            document.getElementById('editNoteInput').value = window.state.note || "";
 
             // Calculate episode progress percentage
-            const totalSec = parseTimeToSeconds(epObj.duration || '28:41');
-            const currentSec = parseTimeToSeconds(state.time);
+            const totalSec = parseTimeToSeconds(epObj.duration || '41:00');
+            const currentSec = parseTimeToSeconds(window.state.time || '00:00');
             const progressPercent = Math.min(100, Math.max(0, Math.round((currentSec / totalSec) * 100)));
 
             document.getElementById('heroProgressBar').style.width = `${progressPercent}%`;
@@ -361,46 +463,67 @@
             Object.keys(showData).forEach(s => {
                 showData[s].forEach(e => {
                     totalEpisodes++;
-                    if (state.watchedMap[`S${s}E${e.id}`]) {
+                    if (window.state.watchedMap && window.state.watchedMap[`S${s}E${e.id}`]) {
                         watchedCount++;
                     }
                 });
             });
 
-            document.getElementById('statWatchedCount').textContent = watchedCount;
             document.getElementById('statPercent').textContent = `${Math.round((watchedCount / totalEpisodes) * 100)}%`;
 
             // Render Episodes List
             renderEpisodesList();
         }
 
+        // Quick Update Form Submission
+        window.handleQuickUpdate = function() {
+            const s = parseInt(document.getElementById('editSeasonSelect').value);
+            const e = parseInt(document.getElementById('editEpisodeInput').value);
+            const t = document.getElementById('editTimeInput').value.trim() || "00:00";
+            const n = document.getElementById('editNoteInput').value.trim() || `עונה ${s} פרק ${e}`;
+
+            window.state.season = s;
+            window.state.episode = e;
+            window.state.time = t;
+            window.state.note = n;
+
+            // Also mark as watched up to current
+            if (!window.state.watchedMap) window.state.watchedMap = {};
+            window.state.watchedMap[`S${s}E${e}`] = true;
+
+            saveStateToCloud();
+            renderUI();
+        }
+
         // Switch Active Season Tab in Directory
-        function switchSeasonTab(seasonNum) {
-            state.selectedTabSeason = seasonNum;
+        window.switchSeasonTab = function(seasonNum) {
+            window.state.selectedTabSeason = seasonNum;
             renderEpisodesList();
         }
 
-        // Render Episodes List for selected tab season
+        // Render Episodes List
         function renderEpisodesList() {
-            const currentTab = state.selectedTabSeason || state.season;
+            const currentTab = window.state.selectedTabSeason || window.state.season;
             
-            // Update Tab styles
             for (let i = 1; i <= 4; i++) {
                 const btn = document.getElementById(`tabSeason${i}`);
-                if (i === currentTab) {
-                    btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition bg-rose-600 text-white shadow-md";
-                } else {
-                    btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800";
+                if (btn) {
+                    if (i === currentTab) {
+                        btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition bg-rose-600 text-white shadow-md";
+                    } else {
+                        btn.className = "season-tab px-4 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800";
+                    }
                 }
             }
 
             const grid = document.getElementById('episodesGrid');
+            if (!grid) return;
             const episodes = showData[currentTab] || [];
 
             grid.innerHTML = episodes.map(ep => {
                 const key = `S${currentTab}E${ep.id}`;
-                const isWatched = state.watchedMap[key] || false;
-                const isCurrentSpot = (state.season === currentTab && parseInt(state.episode) === ep.id);
+                const isWatched = window.state.watchedMap && window.state.watchedMap[key] || false;
+                const isCurrentSpot = (window.state.season === currentTab && parseInt(window.state.episode) === ep.id);
 
                 let statusBadge = '';
                 if (isCurrentSpot) {
@@ -426,10 +549,10 @@
                             <span class="text-slate-500 font-mono"><i class="fa-regular fa-clock ml-1"></i>${ep.duration}</span>
                             
                             <div class="flex items-center gap-1.5">
-                                <button onclick="toggleWatchedStatus(${currentTab}, ${ep.id})" class="px-2 py-1 rounded ${isWatched ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-emerald-900/30 border border-emerald-700/50 text-emerald-400 hover:bg-emerald-800/40'} text-[11px] font-medium transition">
-                                    ${isWatched ? 'בטל צפייה' : 'סמן כנצפה'}
+                                <button onclick="window.toggleWatchedStatus(${currentTab}, ${ep.id})" class="px-2 py-1 rounded ${isWatched ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-emerald-900/30 border border-emerald-700/50 text-emerald-400 hover:bg-emerald-800/40'} text-[11px] font-medium transition">
+                                    ${isWatched ? 'בטל' : 'סמן כנצפה'}
                                 </button>
-                                <button onclick="setCurrentSpot(${currentTab}, ${ep.id})" class="px-2.5 py-1 rounded bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-bold transition">
+                                <button onclick="window.setCurrentSpotFromGrid(${currentTab}, ${ep.id})" class="px-2.5 py-1 rounded bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-bold transition">
                                     הגדר כנוכחי
                                 </button>
                             </div>
@@ -439,27 +562,27 @@
             }).join('');
         }
 
-        // Direct Set Current Spot
-        function setCurrentSpot(season, episode) {
-            state.season = season;
-            state.episode = episode;
-            state.time = "00:00";
-            state.note = `התחלתי פרק ${episode}`;
+        window.setCurrentSpotFromGrid = function(season, episode) {
+            window.state.season = season;
+            window.state.episode = episode;
+            window.state.time = "00:00";
+            window.state.note = `עברתי לפרק ${episode}`;
+            if (!window.state.watchedMap) window.state.watchedMap = {};
+            window.state.watchedMap[`S${season}E${episode}`] = true;
 
-            saveState();
+            saveStateToCloud();
             renderUI();
-            showToast(`נקודת העצירה עודכנה לעונה ${season} פרק ${episode}!`);
         }
 
-        // Toggle Episode Watched Status
-        function toggleWatchedStatus(season, episode) {
+        window.toggleWatchedStatus = function(season, episode) {
             const key = `S${season}E${episode}`;
-            state.watchedMap[key] = !state.watchedMap[key];
-            saveState();
+            if (!window.state.watchedMap) window.state.watchedMap = {};
+            window.state.watchedMap[key] = !window.state.watchedMap[key];
+            
+            saveStateToCloud();
             renderUI();
         }
 
-        // Helper Time Formats
         function parseTimeToSeconds(timeStr) {
             if (!timeStr || !timeStr.includes(':')) return 0;
             const parts = timeStr.split(':');
@@ -468,10 +591,10 @@
             return (mins * 60) + secs;
         }
 
-        // Show Toast Message
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msgSpan = document.getElementById('toastMsg');
+            if (!toast || !msgSpan) return;
             msgSpan.textContent = message;
 
             toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
@@ -482,6 +605,13 @@
                 toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
             }, 3200);
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('tzomet_authed') === 'true') {
+                document.getElementById('authModal').classList.add('hidden');
+                initFirebaseAndSync();
+            }
+        });
     </script>
 </body>
 </html>
